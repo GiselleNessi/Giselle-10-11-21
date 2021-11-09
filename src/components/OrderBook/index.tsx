@@ -9,13 +9,9 @@ import Loader from '../Loader';
 import DepthVisualizer from '../DepthVisualizer';
 import PriceLevelRow from './PriceLevelRow';
 import { PriceLevelRowContainer } from "./PriceLevelRow/styles";
+import { ProductIds } from '../../App';
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
-const subscribeMessage = {
-  event: 'subscribe',
-  feed: 'book_ui_1',
-  product_ids: ['PI_XBTUSD']
-};
 
 export enum OrderType {
   BIDS,
@@ -24,17 +20,30 @@ export enum OrderType {
 
 interface OrderBookProps {
   windowWidth: number;
+  productId: string;
 }
 
-const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
+const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId }) => {
   const bids: number[][] = useAppSelector(selectBids);
   const asks: number[][] = useAppSelector(selectAsks);
   const dispatch = useAppDispatch();
 
+
   useEffect(() => {
+    const unSubscribeMessage = {
+      event: 'unsubscribe',
+      feed: 'book_ui_1',
+      product_ids: [ProductIds.XBTUSD === productId ? ProductIds.ETHUSD : ProductIds.XBTUSD]
+    };
+    const subscribeMessage = {
+      event: 'subscribe',
+      feed: 'book_ui_1',
+      product_ids: [productId]
+    };
     const ws = new WebSocket(WSS_FEED_URL);
 
     ws.onopen = () => {
+      ws.send(JSON.stringify(unSubscribeMessage));
       ws.send(JSON.stringify(subscribeMessage));
     };
     ws.onmessage = (event) => {
@@ -50,6 +59,9 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
         }
       }
     };
+    ws.onerror = () => {
+
+    };
     ws.onclose = () => {
       ws.close();
     };
@@ -57,7 +69,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
     return () => {
       ws.close();
     };
-  }, [dispatch]);
+  }, [dispatch, productId]);
 
   const formatNumber = (arg: number): string => {
     return new Intl.NumberFormat('en-US').format(arg);
@@ -124,4 +136,4 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
   )
 };
 
-export default React.memo(OrderBook);
+export default OrderBook;
