@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { PriceLevelRow } from './PriceLevelRow';
 import { Container, TableContainer } from './styles';
-import PriceLevelRow from './PriceLevelRow';
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
 const subscribeMessage = {
@@ -55,11 +55,17 @@ const OrderBook = () => {
     return new Intl.NumberFormat('en-US').format(arg);
   };
 
+  const formatPrice = (arg: number): string => {
+    return arg.toLocaleString("en", {useGrouping: true, minimumFractionDigits: 2})
+  };
+
   const buildPriceLevels = (levels: []): React.ReactNode => {
     return (
-      levels.map(level => {
+      levels.map((level, index) => {
         const total: string = formatNumber(level[1]);
-        return <PriceLevelRow key={level[0]} total={total} size={formatNumber(level[1])} price={formatNumber(level[0])} />;
+        const size: string = formatNumber(level[1]);
+        const price: string = formatPrice(level[0]);
+        return <PriceLevelRow key={index} total={total} size={size} price={price} />;
       })
     );
   };
