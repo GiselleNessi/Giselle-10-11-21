@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { Container } from "./styles";
 import { MOBILE_WIDTH } from "../../../state/constants";
-
 interface TitleRowProps {
   reversedFieldsOrder?: boolean;
   windowWidth: number;
@@ -9,17 +8,17 @@ interface TitleRowProps {
 
 const TitleRow: FunctionComponent<TitleRowProps> = ({reversedFieldsOrder = false, windowWidth}) => {
   return (
-    <Container>
+    <Container data-testid='title-row'>
       {reversedFieldsOrder || windowWidth < MOBILE_WIDTH ?
         <>
-          <span>PRIZE</span>
+          <span>PRICE</span>
           <span>SIZE</span>
           <span>TOTAL</span>
         </> :
         <>
           <span>TOTAL</span>
           <span>SIZE</span>
-          <span>PRIZE</span>
+          <span>PRICE</span>
         </>}
     </Container>
   );
