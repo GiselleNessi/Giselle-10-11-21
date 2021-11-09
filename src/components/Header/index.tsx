@@ -1,3 +1,12 @@
-import Header from "./Header";
+import React, { FunctionComponent } from 'react';
+import { Container } from './styles';
 
-export {Header};
+const Header: FunctionComponent = () => {
+  return (
+    <Container>
+      Orderbook
+    </Container>
+  );
+};
+
+export default Header;

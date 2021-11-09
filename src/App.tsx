@@ -1,6 +1,7 @@
 import GlobalStyle from './styles/styles';
 import OrderBook from './components/OrderBook';
-import { Header } from './components/Header';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <GlobalStyle/>
       <Header/>
       <OrderBook/>
+      <Footer />
     </>
   );
 }
