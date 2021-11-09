@@ -6,6 +6,8 @@ import Spread from "../Spread";
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { addAsks, addBids, addExistingState, selectAsks, selectBids } from './orderbookSlice';
 import { MOBILE_WIDTH } from "../../state/constants";
+import Loader from '../Loader';
+
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
 const subscribeMessage = {
@@ -98,10 +100,10 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
 
   return (
     <Container>
-      {bids && asks ?
+      {bids.length && asks.length ?
         <>
           <TableContainer isBids>
-            <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false}/>
+            {windowWidth > MOBILE_WIDTH && <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false} />}
             {buildPriceLevels(bids, OrderType.BIDS)}
           </TableContainer>
           <Spread/>
@@ -110,7 +112,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
             {buildPriceLevels(asks, OrderType.ASKS)}
           </TableContainer>
         </> :
-        <>No data.</>}
+        <Loader />}
 
 
     </Container>

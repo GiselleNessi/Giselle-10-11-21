@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  width: 50%;
+  width: 100%;
   margin: 0 auto;
   justify-content: space-between;
   color: #98a6af;
@@ -14,7 +14,6 @@ export const Container = styled.div`
     color: #bfc1c8;
   }
   @media only screen and (min-width: 800px) {
-    width: 100%;
     padding: 0.7em;
   }
 `
