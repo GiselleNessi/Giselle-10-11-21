@@ -1,6 +1,7 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
 import { groupByTicketSize } from "../../state/helpers";
+import { ORDERBOOK_LEVELS } from "../../state/constants";
 export interface OrderbookState {
   market: string;
   rawBids: number[][];
@@ -11,8 +12,6 @@ export interface OrderbookState {
   maxTotalAsks: number;
   groupingSize: number;
 }
-
-const ORDERBOOK_LEVELS: number = 25;
 
 const initialState: OrderbookState = {
   market: 'PI_XBTUSD', // PI_ETHUSD
@@ -119,22 +118,28 @@ export const orderbookSlice = createSlice({
   initialState,
   reducers: {
     addBids: (state, { payload }) => {
+      const currentTicketSize: number = current(state).groupingSize;
+      const groupedCurrentBids: number[][] = groupByTicketSize(payload, currentTicketSize);
       const updatedBids: number[][] = addTotalSums(
-        groupByTicketSize(
-          applyDeltas(current(state).rawBids, payload),
-          current(state).groupingSize
+        applyDeltas(
+          groupByTicketSize(current(state).rawBids, currentTicketSize),
+          groupedCurrentBids
         )
       );
+
       state.maxTotalBids = getMaxTotalSum(updatedBids);
       state.bids = addDepths(updatedBids, current(state).maxTotalBids);
     },
     addAsks: (state, { payload }) => {
+      const currentTicketSize: number = current(state).groupingSize;
+      const groupedCurrentAsks: number[][] = groupByTicketSize(payload, currentTicketSize);
       const updatedAsks: number[][] = addTotalSums(
-        groupByTicketSize(
-          applyDeltas(current(state).rawAsks, payload),
-          current(state).groupingSize
+        applyDeltas(
+          groupByTicketSize(current(state).rawAsks, currentTicketSize),
+          groupedCurrentAsks
         )
       );
+
       state.maxTotalAsks = getMaxTotalSum(updatedAsks);
       state.asks = addDepths(updatedAsks, current(state).maxTotalAsks);
     },
