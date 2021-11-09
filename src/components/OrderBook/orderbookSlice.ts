@@ -46,6 +46,7 @@ const addPriceLevel = (deltaLevel: number[], levels: number[][]): number[][] => 
  that price level should be removed from the orderbook,
  otherwise you can safely overwrite the state of that
  price level with new data returned by that delta.
+
  - The orders returned by the feed are in the format
  of [price, size][].
  * @param currentLevels Existing price levels - `bids` or `asks`
