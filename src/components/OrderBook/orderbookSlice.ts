@@ -143,13 +143,13 @@ export const orderbookSlice = createSlice({
       state.maxTotalAsks = getMaxTotalSum(updatedAsks);
       state.asks = addDepths(updatedAsks, current(state).maxTotalAsks);
     },
-    addExistingState: (state, action: PayloadAction<any>) => {
-      const rawBids: number[][] = action.payload.bids;
-      const rawAsks: number[][] = action.payload.asks;
+    addExistingState: (state, { payload }) => {
+      const rawBids: number[][] = payload.bids;
+      const rawAsks: number[][] = payload.asks;
       const bids: number[][] = addTotalSums(groupByTicketSize(rawBids, current(state).groupingSize));
       const asks: number[][] = addTotalSums(groupByTicketSize(rawAsks, current(state).groupingSize));
 
-      state.market = action.payload['product_id'];
+      state.market = payload['product_id'];
       state.rawBids = rawBids;
       state.rawAsks = rawAsks;
       state.maxTotalBids = getMaxTotalSum(bids);
@@ -159,11 +159,19 @@ export const orderbookSlice = createSlice({
     },
     setGrouping: (state, { payload }) => {
       state.groupingSize = payload;
+    },
+    clearOrdersState: (state) => {
+      state.bids = [];
+      state.asks = [];
+      state.rawBids = [];
+      state.rawAsks = [];
+      state.maxTotalBids = 0;
+      state.maxTotalAsks = 0;
     }
   }
 });
 
-export const { addBids, addAsks, addExistingState, setGrouping } = orderbookSlice.actions;
+export const { addBids, addAsks, addExistingState, setGrouping, clearOrdersState } = orderbookSlice.actions;
 
 export const selectBids = (state: RootState): number[][] => state.orderbook.bids;
 export const selectAsks = (state: RootState): number[][] => state.orderbook.asks;
