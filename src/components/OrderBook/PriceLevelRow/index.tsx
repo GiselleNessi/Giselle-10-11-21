@@ -6,25 +6,28 @@ interface PriceLevelRowProps {
   size: string;
   price: string;
   reversedFieldsOrder?: boolean;
+  depth: number;
 }
 
 const PriceLevelRow: FunctionComponent<PriceLevelRowProps> = ({
                                                                 total,
                                                                 size,
                                                                 price,
-                                                                reversedFieldsOrder = false }) => {
+                                                                reversedFieldsOrder = false,
+                                                                depth
+                                                              }) => {
   return (
-    <Container isRight={!reversedFieldsOrder} depth={29}>
+    <Container isRight={!reversedFieldsOrder} depth={depth}>
       {reversedFieldsOrder ?
         <>
-          <span>{price}</span>
+          <span className='price'>{price}</span>
           <span>{size}</span>
           <span>{total}</span>
         </> :
         <>
           <span>{total}</span>
           <span>{size}</span>
-          <span>{price}</span>
+          <span className='price'>{price}</span>
         </>}
     </Container>
   );
