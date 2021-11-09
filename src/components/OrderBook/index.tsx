@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PriceLevelRow } from './PriceLevelRow';
 import { Container, TableContainer } from './styles';
+import { TitleRow } from './TitleRow';
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
 const subscribeMessage = {
@@ -73,9 +74,11 @@ const OrderBook = () => {
   return (
     <Container>
       <TableContainer>
+        <TitleRow/>
         {existingState && buildPriceLevels(existingState.bids)}
       </TableContainer>
       <TableContainer>
+        <TitleRow/>
         {existingState && buildPriceLevels(existingState.asks)}
       </TableContainer>
     </Container>
