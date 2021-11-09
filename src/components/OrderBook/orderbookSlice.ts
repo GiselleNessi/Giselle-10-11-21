@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
 import { groupByTicketSize } from "../../state/helpers";
 import { ORDERBOOK_LEVELS } from "../../state/constants";
