@@ -11,6 +11,7 @@ import DepthVisualizer from '../DepthVisualizer';
 import PriceLevelRow from './PriceLevelRow';
 import { PriceLevelRowContainer } from "./PriceLevelRow/styles";
 import { ProductsMap } from "../../App";
+import { formatNumber } from "../../state/helpers";
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
 
@@ -76,7 +77,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
     } else {
       connect(productId);
     }
-  }, [isFeedKilled, productId ]);
+  }, [isFeedKilled, productId, sendJsonMessage, getWebSocket]);
 
   const process = (data: Delta) => {
     if (data?.bids?.length > 0) {
@@ -97,10 +98,6 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
         currentAsks.length = 0;
       }
     }
-  };
-
-  const formatNumber = (arg: number): string => {
-    return new Intl.NumberFormat('en-US').format(arg);
   };
 
   const formatPrice = (arg: number): string => {
@@ -151,7 +148,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
             {windowWidth > MOBILE_WIDTH && <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false} />}
             <div>{buildPriceLevels(bids, OrderType.BIDS)}</div>
           </TableContainer>
-          <Spread />
+          <Spread bids={bids} asks={asks} />
           <TableContainer isBids={false}>
             <TitleRow windowWidth={windowWidth} reversedFieldsOrder={true} />
             <div>
