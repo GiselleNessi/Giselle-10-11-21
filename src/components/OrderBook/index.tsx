@@ -9,9 +9,10 @@ import Loader from '../Loader';
 import DepthVisualizer from '../DepthVisualizer';
 import PriceLevelRow from './PriceLevelRow';
 import { PriceLevelRowContainer } from "./PriceLevelRow/styles";
-import { ProductIds } from '../../App';
+import { ProductIds } from "../../App";
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
+const RECONNECTING_TIME = 2000; // ms
 
 export enum OrderType {
   BIDS,
@@ -31,12 +32,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
   const ws = useRef({} as WebSocket);
 
   useEffect(() => {
-    const connectWebSocket = () => {
-      const unSubscribeMessage = {
-        event: 'unsubscribe',
-        feed: 'book_ui_1',
-        product_ids: [ProductIds.XBTUSD === productId ? ProductIds.ETHUSD : ProductIds.XBTUSD]
-      };
+    function connectWebSocket() {
       const subscribeMessage = {
         event: 'subscribe',
         feed: 'book_ui_1',
@@ -44,9 +40,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
       };
 
       ws.current = new WebSocket(WSS_FEED_URL);
-
       ws.current.onopen = () => {
-        ws.current.send(JSON.stringify(unSubscribeMessage));
         ws.current.send(JSON.stringify(subscribeMessage));
       };
       ws.current.onmessage = (event) => {
@@ -63,16 +57,16 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
         }
       };
       ws.current.onerror = (event: Event) => {
-        console.log('An error occurred:', event);
+        console.log('An error occurred when subscribing to feed:', event);
         setTimeout(() => {
           connectWebSocket();
-          console.log(">>> reconnecting in 2 sec")
-        }, 2000);
+          console.log("Reconnecting socket in 2 seconds.");
+        }, RECONNECTING_TIME);
       };
       ws.current.onclose = () => {
         ws.current.close();
       };
-    };
+    }
 
     if (isFeedKilled) {
       ws.current.close();
@@ -81,9 +75,26 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
     }
 
     return () => {
-      ws.current.close();
+      const unSubscribeMessage = {
+        event: 'unsubscribe',
+        feed: 'book_ui_1',
+        product_ids: [ProductIds.XBTUSD === productId ? ProductIds.ETHUSD : ProductIds.XBTUSD]
+      };
+      ws.current.onopen = () => {
+        ws.current.send(JSON.stringify(unSubscribeMessage));
+      };
+      ws.current.onerror = (event: Event) => {
+        console.log('An error occurred when unsubscribing from feed:', event);
+        setTimeout(() => {
+          connectWebSocket();
+          console.log("Reconnecting socket in 2 seconds.");
+        }, RECONNECTING_TIME);
+      };
+      ws.current.onclose = () => {
+        ws.current.close();
+      };
     };
-  }, [dispatch, productId, isFeedKilled]);
+  }, [dispatch, isFeedKilled, productId]);
 
   const formatNumber = (arg: number): string => {
     return new Intl.NumberFormat('en-US').format(arg);
@@ -135,12 +146,14 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth, productId, 
         <>
           <TableContainer isBids>
             {windowWidth > MOBILE_WIDTH && <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false}/>}
-            {buildPriceLevels(bids, OrderType.BIDS)}
+            <div>{buildPriceLevels(bids, OrderType.BIDS)}</div>
           </TableContainer>
           <Spread/>
           <TableContainer isBids={false}>
             <TitleRow windowWidth={windowWidth} reversedFieldsOrder={true}/>
-            {buildPriceLevels(asks, OrderType.ASKS)}
+            <div>
+              {buildPriceLevels(asks, OrderType.ASKS)}
+            </div>
           </TableContainer>
         </> :
         <Loader/>}
