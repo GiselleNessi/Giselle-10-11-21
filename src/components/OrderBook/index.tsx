@@ -1,13 +1,14 @@
 import React, { useEffect, FunctionComponent } from 'react';
 import TitleRow from "./TitleRow";
 import { Container, TableContainer } from "./styles";
-import PriceLevelRow from "./PriceLevelRow";
 import Spread from "../Spread";
 import { useAppDispatch, useAppSelector } from '../../state/hooks';
 import { addAsks, addBids, addExistingState, selectAsks, selectBids } from './orderbookSlice';
 import { MOBILE_WIDTH } from "../../state/constants";
 import Loader from '../Loader';
-
+import DepthVisualizer from '../DepthVisualizer';
+import PriceLevelRow from './PriceLevelRow';
+import { PriceLevelRowContainer } from "./PriceLevelRow/styles";
 
 const WSS_FEED_URL: string = 'wss://www.cryptofacilities.com/ws/v1';
 const subscribeMessage = {
@@ -16,7 +17,7 @@ const subscribeMessage = {
   product_ids: ['PI_XBTUSD']
 };
 
-enum OrderType {
+export enum OrderType {
   BIDS,
   ASKS
 }
@@ -87,13 +88,17 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
         const size: string = formatNumber(level[1]);
         const price: string = formatPrice(level[0]);
 
-        return <PriceLevelRow key={idx}
-                              total={total}
-                              depth={depth}
-                              size={size}
-                              price={price}
-                              reversedFieldsOrder={orderType === OrderType.ASKS}
-                              windowWidth={windowWidth}/>;
+        return (
+          <PriceLevelRowContainer key={idx+depth}>
+            <DepthVisualizer key={depth} windowWidth={windowWidth} depth={depth} orderType={orderType}/>
+            <PriceLevelRow key={size+total}
+                           total={total}
+                           size={size}
+                           price={price}
+                           reversedFieldsOrder={orderType === OrderType.ASKS}
+                           windowWidth={windowWidth}/>
+          </PriceLevelRowContainer>
+        );
       })
     );
   };
@@ -103,7 +108,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
       {bids.length && asks.length ?
         <>
           <TableContainer isBids>
-            {windowWidth > MOBILE_WIDTH && <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false} />}
+            {windowWidth > MOBILE_WIDTH && <TitleRow windowWidth={windowWidth} reversedFieldsOrder={false}/>}
             {buildPriceLevels(bids, OrderType.BIDS)}
           </TableContainer>
           <Spread/>
@@ -112,7 +117,7 @@ const OrderBook: FunctionComponent<OrderBookProps> = ({ windowWidth }) => {
             {buildPriceLevels(asks, OrderType.ASKS)}
           </TableContainer>
         </> :
-        <Loader />}
+        <Loader/>}
 
 
     </Container>
