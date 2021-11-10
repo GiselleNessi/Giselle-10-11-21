@@ -43,7 +43,7 @@ const addPriceLevel = (deltaLevel: number[], levels: number[][]): number[][] => 
 
 /**
  *  If the size returned by a delta is 0 then
- that price level should be removed from the orderbook,
+ price should be removed from the orderbook,
  otherwise you can safely overwrite the state of that
  price level with new data returned by that delta.
 

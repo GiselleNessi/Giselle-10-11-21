@@ -1,9 +1,5 @@
-
-   
 import React, { FunctionComponent } from 'react';
-
 import { Container } from "./styles";
-
 interface ButtonProps {
   title: string;
   backgroundColor: string;
