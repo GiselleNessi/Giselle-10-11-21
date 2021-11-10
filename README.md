@@ -42,3 +42,10 @@ To run the tests:
   yarn test
 ```
 
+### Notes
+Some optimization and improvements can be implemented:
+
+- Refactor some types to use generics and better naming
+- Error handle
+- Add transitions animation for toggle and depth graph
+- Improve performance for big volume of updates
