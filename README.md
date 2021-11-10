@@ -2,7 +2,7 @@
 Crypto Exchange Order Book web app built with Typescript and React.
 
 ## Demo
-[giselle-10-11-21.vercel.app/](https://giselle-10-11-21.vercel.app/)
+[giselle-10-11-21.vercel.app](https://giselle-10-11-21.vercel.app/)
 
 ## Tech stack
  - React / Typescript
@@ -43,7 +43,7 @@ To run the tests:
 ### Notes
 Some optimization and improvements can be implemented:
 
-- Refactor some types to use generics and better naming
+- Refactor some types to use generic and better naming
 - Implement error handling
 - Add transitions animation for toggle and depth graph
 - Improve performance for big volume of updates
