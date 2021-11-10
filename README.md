@@ -1,8 +1,6 @@
 # Giselle-10-11-21
 Crypto Exchange Order Book web app built with Typescript and React.
 
-<hr />
-
 ## Demo
 [giselle-10-11-21.vercel.app/](https://giselle-10-11-21.vercel.app/)
 
@@ -46,6 +44,6 @@ To run the tests:
 Some optimization and improvements can be implemented:
 
 - Refactor some types to use generics and better naming
-- Error handle
+- Implement error handling
 - Add transitions animation for toggle and depth graph
 - Improve performance for big volume of updates
